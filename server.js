@@ -1,46 +1,56 @@
+// 📦 Required Modules
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 
+// ✅ App Initialization
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
+app.use(express.json()); // Built-in body parser
+app.use(cors({ origin: '*' })); // Allow requests from all origins
 
-// MongoDB connection
-// mongoose.connect('mongodb+srv://ankanpaul7897:Hazard10@portfolio.fjqfue6.mongodb.net/',
-mongoose.connect('mongodb+srv://ankanpaul7897:Hazard10@portfolio.fjqfue6.mongodb.net/test?retryWrites=true&w=majority&appName=portfolio',
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
+// 🌐 MongoDB Connection String
+const MONGODB_URI = 'mongodb+srv://ankanpaul7897:Hazard10@portfolio.fjqfue6.mongodb.net/test?retryWrites=true&w=majority&appName=portfolio';
+
+// 📡 MongoDB Connection
+mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
 
 const database = mongoose.connection;
 
+// ❌ MongoDB Connection Error
 database.on('error', (error) => {
-    console.log(error)
-})
+    console.error('❌ MongoDB Connection Error:', error);
+});
 
+// ✅ MongoDB Connected
 database.once('connected', () => {
-    console.log('Eror!! MongoDB Database Connected Successfully :)');
-})
+    console.log('✅ MongoDB Database Connected Successfully!');
+});
 
-// Schema 
+// 🧾 Mongoose Schema
 const UserSchema = new mongoose.Schema({
     name: String,
     location: String,
     feedback: String,
 });
 
+// 📄 Mongoose Model
 const User = mongoose.model('User', UserSchema);
 
-// POST route
+// 📨 POST Route to Register Feedback
 app.post('/register', async (req, res) => {
-    const { name, location, feedback } = req.body;
-    const user = new User({ name, location, feedback });
-    await user.save();
-    res.send("Your Message Sent successfully!");
+    try {
+        const { name, location, feedback } = req.body;
+        const user = new User({ name, location, feedback });
+        await user.save();
+        res.status(200).send("Your Message Sent successfully!");
+    } catch (err) {
+        console.error('❌ Error saving feedback:', err);
+        res.status(500).send("Something went wrong.");
+    }
 });
 
+// 🚀 Start the Server
 app.listen(5000, () => console.log('✅ Server running at http://localhost:5000'));
