@@ -9,10 +9,12 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://ankanpaul7897:Hazard10@portfolio.fjqfue6.mongodb.net/', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+// mongoose.connect('mongodb+srv://ankanpaul7897:Hazard10@portfolio.fjqfue6.mongodb.net/',
+mongoose.connect('mongodb+srv://ankanpaul7897:Hazard10@portfolio.fjqfue6.mongodb.net/test?retryWrites=true&w=majority&appName=portfolio',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 
 const database = mongoose.connection;
 
